@@ -20,7 +20,7 @@ class FigureViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         subscribeToEvents()
-        performFigureSocketConnection(to: "78.107.253.32:32111")
+        performFigureSocketConnection(to: "ip:port")
         view.backgroundColor = UIColor.white
     }
 }
