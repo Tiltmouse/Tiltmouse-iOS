@@ -5,13 +5,12 @@
 //  Created by Aleksander Ivanin on 18.01.2020.
 //
 
-import CocoaAsyncSocket
 import CoreMotion
 import Starscream
 import UIKit
 
 class FigureViewController: UIViewController {
-    private var socket: GCDAsyncUdpSocket?
+    private var udpBroadcastConnection: UDPBroadcastConnection?
     private let port: UInt16 = 5555
     private var motionManager = CMMotionManager()
     private var figureSocket: WebSocket?
@@ -20,7 +19,7 @@ class FigureViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         subscribeToEvents()
-        performFigureSocketConnection(to: "ip:port")
+        performConnection()
         view.backgroundColor = UIColor.white
     }
 }
@@ -35,48 +34,32 @@ private extension FigureViewController {
 
     @objc
     func onApplicationEnterForeground() {
-        if case .none = socket {
+        if case .none = udpBroadcastConnection {
             performConnection()
-        }
-        if figureSocket != nil {
-            performFigureSocketConnection(to: "78.107.253.32:26199")
         }
     }
 
     @objc
     func onApplicationEnterBackground() {
-        socket?.close()
-        socket = nil
-        guard let figureSocket = figureSocket else { return }
-        figureSocket.disconnect()
+        closeUDPSocket()
+        figureSocket?.disconnect()
     }
 }
 
 // MARK: - Network
 
-extension FigureViewController: GCDAsyncUdpSocketDelegate {
+extension FigureViewController {
     func performConnection() {
-        socket = GCDAsyncUdpSocket(delegate: self, delegateQueue: DispatchQueue.main)
         do {
-            try socket?.enableBroadcast(true)
-            try socket?.bind(toPort: port)
-            try socket?.beginReceiving()
+            udpBroadcastConnection = try UDPBroadcastConnection(port: port, bindIt: true, handler: { [weak self] (ip, port, data) in
+                let socketPort = UInt16(bigEndian: data.withUnsafeBytes { $0.pointee })
+                self?.performFigureSocketConnection(to: "\(ip):\(socketPort)")
+            }, errorHandler: { (error) in
+                print("Connection error: \(error)")
+            })
         } catch {
             print("Connection error: \(error)")
         }
-    }
-
-    func udpSocket(_ sock: GCDAsyncUdpSocket, didNotConnect error: Error?) { }
-
-    func udpSocket(_ sock: GCDAsyncUdpSocket, didConnectToAddress address: Data) { }
-
-    func udpSocket(_ sock: GCDAsyncUdpSocket, didReceive data: Data, fromAddress address: Data, withFilterContext filterContext: Any?) {
-        guard let receivedData = String(data: data, encoding: .utf8) else {
-            print("Invalid received data: \(data)")
-            return
-        }
-        print("Received data: \(receivedData)")
-        performFigureSocketConnection(to: receivedData)
     }
 
     func performFigureSocketConnection(to address: String) {
@@ -86,24 +69,37 @@ extension FigureViewController: GCDAsyncUdpSocketDelegate {
         }
         figureSocket = WebSocket(url: url, protocols: ["room161"])
         figureSocket?.delegate = self
+        figureSocket?.request.setValue(nil, forHTTPHeaderField: "Origin")
         figureSocket?.connect()
-        startMotionCapture()
+        closeUDPSocket()
+    }
+
+    func closeUDPSocket() {
+        udpBroadcastConnection?.closeConnection()
+        udpBroadcastConnection = nil
     }
 }
 
 // MARK: - Socket delegate
 
 extension FigureViewController: WebSocketDelegate {
-    func websocketDidConnect(socket: WebSocketClient) { }
-
-    func websocketDidDisconnect(socket: WebSocketClient, error: Error?) { }
-
-    func websocketDidReceiveMessage(socket: WebSocketClient, text: String) {
-        guard let roomId = text.split(separator: " ").last else { return }
-        print(String(roomId))
+    func websocketDidConnect(socket: WebSocketClient) {
+        figureSocket?.write(string: "room131")
+        startMotionCapture()
     }
 
-    func websocketDidReceiveData(socket: WebSocketClient, data: Data) { }
+    func websocketDidDisconnect(socket: WebSocketClient, error: Error?) {
+        print("Socket connection error: \(String(describing: error))")
+    }
+
+    func websocketDidReceiveMessage(socket: WebSocketClient, text: String) {
+        print("Received message: \(text)")
+    }
+
+    func websocketDidReceiveData(socket: WebSocketClient, data: Data) {
+        print("Received data: \(data)")
+        print("Received data (string): \(String(describing: String(data: data, encoding: .utf8)))")
+    }
 }
 
 // MARK: - Motion detection

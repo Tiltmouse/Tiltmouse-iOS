@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		73802311BD85A718EA9EE72F /* Pods_Tiltmouse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E0CD0DF2FF0D036DA1F32C /* Pods_Tiltmouse.framework */; };
+		CB478C3E23D8D31000CC7F9A /* UDPBroadcastConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB478C3C23D8D31000CC7F9A /* UDPBroadcastConnection.swift */; };
+		CB478C3F23D8D31000CC7F9A /* UDPBroadcastConnectionError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB478C3D23D8D31000CC7F9A /* UDPBroadcastConnectionError.swift */; };
 		CBF4A33B23D37E860076BD6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF4A33A23D37E860076BD6A /* AppDelegate.swift */; };
 		CBF4A33F23D37E860076BD6A /* FigureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF4A33E23D37E860076BD6A /* FigureViewController.swift */; };
 		CBF4A34423D37E860076BD6A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CBF4A34323D37E860076BD6A /* Assets.xcassets */; };
@@ -18,6 +20,8 @@
 		3E9C6355A5D9A996D110D54A /* Pods-MoveFigure.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MoveFigure.release.xcconfig"; path = "Pods/Target Support Files/Pods-MoveFigure/Pods-MoveFigure.release.xcconfig"; sourceTree = "<group>"; };
 		747AC939AB7409A60E335AFB /* Pods-MoveFigure.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MoveFigure.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MoveFigure/Pods-MoveFigure.debug.xcconfig"; sourceTree = "<group>"; };
 		9CBC7AA4FE4802344157263B /* Pods-Tiltmouse.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tiltmouse.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tiltmouse/Pods-Tiltmouse.debug.xcconfig"; sourceTree = "<group>"; };
+		CB478C3C23D8D31000CC7F9A /* UDPBroadcastConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDPBroadcastConnection.swift; sourceTree = "<group>"; };
+		CB478C3D23D8D31000CC7F9A /* UDPBroadcastConnectionError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDPBroadcastConnectionError.swift; sourceTree = "<group>"; };
 		CBF4A33723D37E860076BD6A /* Tiltmouse.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tiltmouse.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CBF4A33A23D37E860076BD6A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CBF4A33E23D37E860076BD6A /* FigureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FigureViewController.swift; sourceTree = "<group>"; };
@@ -50,6 +54,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		CB478C3B23D8D2ED00CC7F9A /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				CB478C3C23D8D31000CC7F9A /* UDPBroadcastConnection.swift */,
+				CB478C3D23D8D31000CC7F9A /* UDPBroadcastConnectionError.swift */,
+			);
+			path = Libraries;
+			sourceTree = "<group>";
+		};
 		CBF4A32E23D37E860076BD6A = {
 			isa = PBXGroup;
 			children = (
@@ -71,6 +84,7 @@
 		CBF4A33923D37E860076BD6A /* Tiltmouse */ = {
 			isa = PBXGroup;
 			children = (
+				CB478C3B23D8D2ED00CC7F9A /* Libraries */,
 				CBF4A33A23D37E860076BD6A /* AppDelegate.swift */,
 				CBF4A33E23D37E860076BD6A /* FigureViewController.swift */,
 				CBF4A34323D37E860076BD6A /* Assets.xcassets */,
@@ -165,12 +179,10 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Tiltmouse/Pods-Tiltmouse-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/CocoaAsyncSocket/CocoaAsyncSocket.framework",
 				"${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaAsyncSocket.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Starscream.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -205,6 +217,8 @@
 			files = (
 				CBF4A33F23D37E860076BD6A /* FigureViewController.swift in Sources */,
 				CBF4A33B23D37E860076BD6A /* AppDelegate.swift in Sources */,
+				CB478C3F23D8D31000CC7F9A /* UDPBroadcastConnectionError.swift in Sources */,
+				CB478C3E23D8D31000CC7F9A /* UDPBroadcastConnection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
